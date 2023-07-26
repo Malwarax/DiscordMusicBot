@@ -10,31 +10,28 @@ namespace DiscordMusicBot.Application.Services
         private readonly BotOptions _botOptions;
         private readonly CommandHandler _commandHandler;
         private readonly DiscordSocketClient _socketClient;
+        private readonly LoggingService _loggingService;
 
         public MusicBotService(IOptions<BotOptions> botOptions,
             CommandHandler commandHandler,
-            DiscordSocketClient socketClient)
+            DiscordSocketClient socketClient,
+            LoggingService loggingService)
         {
             _botOptions = botOptions.Value;
             _commandHandler = commandHandler;
             _socketClient = socketClient;
+            _loggingService = loggingService;
         }
 
         public async Task StartAsync()
         {
-            _socketClient.Log += Log;
+            _loggingService.InstallLogging();
             await _commandHandler.InstallCommandsAsync();
             await _socketClient.LoginAsync(TokenType.Bot, _botOptions.Token);
             await _socketClient.StartAsync();
 
             // Block this task until the program is closed.
             await Task.Delay(-1);
-        }
-
-        private Task Log(LogMessage msg)
-        {
-            Console.WriteLine(msg.ToString());
-            return Task.CompletedTask;
         }
     }
 }
