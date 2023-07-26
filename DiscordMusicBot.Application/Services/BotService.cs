@@ -5,14 +5,14 @@ using Microsoft.Extensions.Options;
 
 namespace DiscordMusicBot.Application.Services
 {
-    public class MusicBotService
+    public class BotService
     {
         private readonly BotOptions _botOptions;
         private readonly CommandHandler _commandHandler;
         private readonly DiscordSocketClient _socketClient;
         private readonly LoggingService _loggingService;
 
-        public MusicBotService(IOptions<BotOptions> botOptions,
+        public BotService(IOptions<BotOptions> botOptions,
             CommandHandler commandHandler,
             DiscordSocketClient socketClient,
             LoggingService loggingService)

@@ -11,7 +11,7 @@ namespace DiscordMusicBot.Presentation
         public static async Task Main(string[] args)
         {
             using IHost host = CreateHostBuilder(args).Build();
-            var app = host.Services.GetService<MusicBotService>();
+            var app = host.Services.GetService<BotService>();
             await app.StartAsync();
             await host.RunAsync();
         }

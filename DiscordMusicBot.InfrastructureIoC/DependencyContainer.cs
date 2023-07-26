@@ -12,7 +12,7 @@ namespace DiscordMusicBot.InfrastructureIoC
         public static void RegisterServices(IServiceCollection services)
         {
             //app services
-            services.AddSingleton<MusicBotService>();
+            services.AddSingleton<BotService>();
             services.AddSingleton<CommandHandler>();
             services.AddSingleton<LoggingService>();
             services.AddSingleton<MusicHandler>();
