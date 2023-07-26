@@ -1,5 +1,4 @@
 ﻿using Discord;
-using Discord.Audio;
 using Discord.WebSocket;
 using DiscordMusicBot.Application.Extensions;
 using DiscordMusicBot.Domain.Models;
@@ -24,7 +23,16 @@ namespace DiscordMusicBot.Application.Services
             if (_activeServers.TryGetValue(server, out var queue))
             {
                 queue.Items.Add(song);
-                await queue.TextChannel.SendMessageAsync($"Added to the queue: {song.Title}");
+
+                if (queue.IsBotActive)
+                {
+                    await queue.TextChannel.SendMessageAsync($"Added to the queue: {song.Title}");
+
+                    return;
+                }
+
+                await HandleQueueAsync(queue);
+
                 return;
             }
 
@@ -39,7 +47,8 @@ namespace DiscordMusicBot.Application.Services
             _activeServers.Add(server, newQueue);
 
             var audioClient = await voiceChannel.ConnectAsync();
-            await HandleQueueAsync(audioClient, newQueue);
+            newQueue.AudioClient = audioClient;
+            await HandleQueueAsync(newQueue);
         }
 
         public async Task StopAsync(SocketGuild server)
@@ -91,18 +100,23 @@ namespace DiscordMusicBot.Application.Services
             return false;
         }
 
-        private async Task HandleQueueAsync(IAudioClient audioClient, QueueModel queue)
+        private async Task HandleQueueAsync(QueueModel queue)
         {
+            queue.IsBotActive = true;
+
             while (queue.Items.Any())
             {
                 queue.CurrentSong = queue.Items.First();
                 queue.Items.RemoveAt(0);
-                string songDescription = $"Now playing: {queue.CurrentSong.Title} \n" 
-                                         + $"Author: {queue.CurrentSong.Author} \n" 
+                string songDescription = $"Now playing: {queue.CurrentSong.Title} \n"
+                                         + $"Author: {queue.CurrentSong.Author} \n"
                                          + $"URL: {queue.CurrentSong.Url}";
                 await queue.TextChannel.SendMessageAsync(songDescription);
-                await _audioStreamService.SendAsync(audioClient, queue.CurrentSong.Url);
+                await _audioStreamService.SendAsync(queue.AudioClient, queue.CurrentSong.Url);
             }
+
+            queue.CurrentSong = null;
+            queue.IsBotActive = false;
         }
     }
 }
