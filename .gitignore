@@ -361,4 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-WatcherBot.WebApi/Properties/launchSettings.json
+
+DiscordMusicBot.Presentation/Properties/launchSettings.json

@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordMusicBot.Presentation", "DiscordMusicBot.ConsoleApp\DiscordMusicBot.Presentation.csproj", "{B2E773F6-6089-4935-BADD-5F918A61048F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordMusicBot.InfrastructureIoC", "DiscordMusicBot.InfrastructureIoC\DiscordMusicBot.InfrastructureIoC.csproj", "{D38B4737-C4C4-4425-9180-58720C73C798}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordMusicBot.InfrastructureIoC", "DiscordMusicBot.InfrastructureIoC\DiscordMusicBot.InfrastructureIoC.csproj", "{D38B4737-C4C4-4425-9180-58720C73C798}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordMusicBot.Resources", "DiscordMusicBot.Resources\DiscordMusicBot.Resources.csproj", "{21BEE58A-3738-42B3-8C09-12A571522A45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordMusicBot.Resources", "DiscordMusicBot.Resources\DiscordMusicBot.Resources.csproj", "{21BEE58A-3738-42B3-8C09-12A571522A45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordMusicBot.Domain", "DiscordMusicBot.Domain\DiscordMusicBot.Domain.csproj", "{D39ECD91-7BE0-47A0-9C12-3C62283B0097}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordMusicBot.Domain", "DiscordMusicBot.Domain\DiscordMusicBot.Domain.csproj", "{D39ECD91-7BE0-47A0-9C12-3C62283B0097}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordMusicBot.Application", "DiscordMusicBot.Application\DiscordMusicBot.Application.csproj", "{B410403F-676A-44A9-A600-95A8C0444AF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordMusicBot.Application", "DiscordMusicBot.Application\DiscordMusicBot.Application.csproj", "{B410403F-676A-44A9-A600-95A8C0444AF2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordMusicBot.Presentation", "DiscordMusicBot.Presentation\DiscordMusicBot.Presentation.csproj", "{92091251-653D-498E-A769-BE93D79C095C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B2E773F6-6089-4935-BADD-5F918A61048F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B2E773F6-6089-4935-BADD-5F918A61048F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B2E773F6-6089-4935-BADD-5F918A61048F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B2E773F6-6089-4935-BADD-5F918A61048F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D38B4737-C4C4-4425-9180-58720C73C798}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D38B4737-C4C4-4425-9180-58720C73C798}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D38B4737-C4C4-4425-9180-58720C73C798}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +35,10 @@ Global
 		{B410403F-676A-44A9-A600-95A8C0444AF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B410403F-676A-44A9-A600-95A8C0444AF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B410403F-676A-44A9-A600-95A8C0444AF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92091251-653D-498E-A769-BE93D79C095C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92091251-653D-498E-A769-BE93D79C095C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92091251-653D-498E-A769-BE93D79C095C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92091251-653D-498E-A769-BE93D79C095C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
