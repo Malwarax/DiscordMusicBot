@@ -7,7 +7,7 @@ namespace DiscordMusicBot.Domain.Models
     {
         public IVoiceChannel VoiceChannel { get; set; }
         public ISocketMessageChannel TextChannel { get; set; }
-        public QueueItemModel CurrentSong { get; set; }
-        public Queue<QueueItemModel> Items { get; set; }
+        public SongModel CurrentSong { get; set; }
+        public Queue<SongModel> Items { get; set; }
     }
 }

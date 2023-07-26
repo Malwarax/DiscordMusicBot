@@ -5,7 +5,7 @@ namespace DiscordMusicBot.Application.Services
 {
     public class SongHandler
     {
-        public async Task<QueueItemModel> GetSongAsync(string url)
+        public async Task<SongModel> GetSongAsync(string url)
         {
             var cleanLink = GetCleanLink(url);
 
@@ -18,7 +18,7 @@ namespace DiscordMusicBot.Application.Services
             {
                 var video = await YouTube.Default.GetVideoAsync(url);
 
-                return new QueueItemModel
+                return new SongModel
                 {
                     Title = video.Info.Title,
                     Url = cleanLink,

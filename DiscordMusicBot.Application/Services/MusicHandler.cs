@@ -19,7 +19,7 @@ namespace DiscordMusicBot.Application.Services
         public async Task PlayAsync(SocketGuild server,
             IVoiceChannel voiceChannel,
             ISocketMessageChannel textChannel,
-            QueueItemModel song)
+            SongModel song)
         {
             if (activeSockets.TryGetValue(server, out var queue))
             {
@@ -32,7 +32,7 @@ namespace DiscordMusicBot.Application.Services
             {
                 VoiceChannel = voiceChannel,
                 TextChannel = textChannel,
-                Items = new Queue<QueueItemModel>(),
+                Items = new Queue<SongModel>(),
             };
 
             newQueue.Items.Enqueue(song);
