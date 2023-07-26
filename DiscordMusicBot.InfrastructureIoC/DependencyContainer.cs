@@ -1,6 +1,8 @@
-﻿using DiscordMusicBot.Application.Services;
+﻿using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
+using DiscordMusicBot.Application.Services;
 using DiscordMusicBot.Domain.Configuration;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DiscordMusicBot.InfrastructureIoC
@@ -9,13 +11,20 @@ namespace DiscordMusicBot.InfrastructureIoC
     {
         public static void RegisterServices(IServiceCollection services)
         {
-            services.AddSingleton<MusicBot>();
-            services.AddOptions<BotOptions>().BindConfiguration(nameof(BotOptions));
-        }
+            //app services
+            services.AddSingleton<MusicBotService>();
+            services.AddSingleton<CommandHandler>();
 
-        public static void RegisterConfiguration(IServiceCollection services, IConfiguration configuration)
-        {
-            //TODO
+            //discord.net services
+            services.AddSingleton<CommandService>();
+            services.AddSingleton<DiscordSocketConfig>(s => new DiscordSocketConfig
+            {
+                GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.MessageContent
+            });
+            services.AddSingleton<DiscordSocketClient>();
+
+            //options
+            services.AddOptions<BotOptions>().BindConfiguration(nameof(BotOptions));
         }
     }
 }

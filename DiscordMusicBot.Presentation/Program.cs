@@ -11,7 +11,7 @@ namespace DiscordMusicBot.Presentation
         public static async Task Main(string[] args)
         {
             using IHost host = CreateHostBuilder(args).Build();
-            var app = host.Services.GetService<MusicBot>();
+            var app = host.Services.GetService<MusicBotService>();
             await app.StartAsync();
             await host.RunAsync();
         }
@@ -21,7 +21,6 @@ namespace DiscordMusicBot.Presentation
             var host = Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    DependencyContainer.RegisterConfiguration(services, hostContext.Configuration);
                     DependencyContainer.RegisterServices(services);
                 })
                 .ConfigureLogging(options => options.SetMinimumLevel(LogLevel.Error));
