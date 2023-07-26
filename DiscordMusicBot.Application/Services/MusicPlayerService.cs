@@ -48,9 +48,12 @@ namespace DiscordMusicBot.Application.Services
 
             var audioClient = await voiceChannel.ConnectAsync();
             newQueue.AudioClient = audioClient;
+
+            audioClient.Disconnected += ex => HandleDisconnectedAsync(ex, server);
+
             await HandleQueueAsync(newQueue);
         }
-
+        
         public async Task StopAsync(SocketGuild server)
         {
             if (_activeServers.TryGetValue(server, out var queue))
@@ -117,6 +120,16 @@ namespace DiscordMusicBot.Application.Services
 
             queue.CurrentSong = null;
             queue.IsBotActive = false;
+        }
+
+        private Task HandleDisconnectedAsync(Exception exception, SocketGuild server)
+        {
+            if (_activeServers.TryGetValue(server, out var queue))
+            {
+                _activeServers.Remove(server);
+            }
+
+            return Task.CompletedTask;
         }
     }
 }
