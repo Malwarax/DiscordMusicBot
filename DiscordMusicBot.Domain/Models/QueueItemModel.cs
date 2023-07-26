@@ -2,7 +2,8 @@
 {
     public class QueueItemModel
     {
-        public string SongName { get; set; }
-        public string SongUrl { get; set; }
+        public string Title { get; set; }
+        public string Url { get; set; }
+        public string Author { get; set; }
     }
 }

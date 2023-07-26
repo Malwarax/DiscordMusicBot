@@ -9,11 +9,11 @@ namespace DiscordMusicBot.Application.Commands
     public class MusicModule : ModuleBase<SocketCommandContext>
     {
         private readonly MusicHandler _musicHandler;
-        private readonly LinkHandler _linkHandler;
+        private readonly SongHandler _linkHandler;
         private readonly BotOptions _botOptions;
 
         public MusicModule(MusicHandler musicHandler,
-            LinkHandler linkHandler,
+            SongHandler linkHandler,
             IOptions<BotOptions> botOptions)
         {
             _musicHandler = musicHandler;
@@ -30,7 +30,7 @@ namespace DiscordMusicBot.Application.Commands
                 return;
             }
 
-            var song = await _linkHandler.GetQueueItemAsync(query);
+            var song = await _linkHandler.GetSongAsync(query);
 
             if (song == null)
             {
@@ -38,21 +38,21 @@ namespace DiscordMusicBot.Application.Commands
                 return;
             }
 
-            var channel = (Context.User as IGuildUser)?.VoiceChannel;
+            var voiceChannel = (Context.User as IGuildUser)?.VoiceChannel;
 
-            if (channel == null)
+            if (voiceChannel == null)
             {
                 await Context.Channel.SendMessageAsync("User must be in a voice channel.");
                 return;
             }
 
-            await _musicHandler.PlayAsync(Context.Guild, channel, song);
+            await _musicHandler.PlayAsync(Context.Guild, voiceChannel, Context.Channel, song);
         }
 
         [Command("stop", RunMode = RunMode.Async)]
         public async Task StopAsync()
         {
-            await Context.Channel.SendMessageAsync(":ok_hand:");
+            await Context.Channel.SendMessageAsync(":sleeping:");
             await _musicHandler.StopAsync(Context.Guild);
         }
     }

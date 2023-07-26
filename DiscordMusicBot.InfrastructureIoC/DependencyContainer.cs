@@ -16,7 +16,8 @@ namespace DiscordMusicBot.InfrastructureIoC
             services.AddSingleton<CommandHandler>();
             services.AddSingleton<LoggingService>();
             services.AddSingleton<MusicHandler>();
-            services.AddSingleton<LinkHandler>();
+            services.AddSingleton<SongHandler>();
+            services.AddSingleton<AudioStreamHandler>();
 
             //discord.net services
             services.AddSingleton<CommandService>();

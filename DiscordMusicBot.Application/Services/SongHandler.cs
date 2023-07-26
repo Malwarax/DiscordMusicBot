@@ -3,11 +3,11 @@ using VideoLibrary;
 
 namespace DiscordMusicBot.Application.Services
 {
-    public class LinkHandler
+    public class SongHandler
     {
-        public async Task<QueueItemModel> GetQueueItemAsync(string link)
+        public async Task<QueueItemModel> GetSongAsync(string url)
         {
-            var cleanLink = GetCleanLink(link);
+            var cleanLink = GetCleanLink(url);
 
             if(string.IsNullOrEmpty(cleanLink))
             {
@@ -16,12 +16,13 @@ namespace DiscordMusicBot.Application.Services
 
             try
             {
-                var video = await YouTube.Default.GetVideoAsync(link);
+                var video = await YouTube.Default.GetVideoAsync(url);
 
                 return new QueueItemModel
                 {
-                    SongName = video.Title,
-                    SongUrl = cleanLink,
+                    Title = video.Info.Title,
+                    Url = cleanLink,
+                    Author = video.Info.Author,
                 };
             }
             catch
@@ -30,9 +31,9 @@ namespace DiscordMusicBot.Application.Services
             }
         }
 
-        private string GetCleanLink(string link)
+        private string GetCleanLink(string url)
         {
-            var isLink = Uri.TryCreate(link, UriKind.Absolute, out Uri uri);
+            var isLink = Uri.TryCreate(url, UriKind.Absolute, out Uri uri);
 
             if (!isLink)
             {
