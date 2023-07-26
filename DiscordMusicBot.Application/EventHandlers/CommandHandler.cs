@@ -4,7 +4,7 @@ using Discord.WebSocket;
 using DiscordMusicBot.Domain.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace DiscordMusicBot.Application.Services
+namespace DiscordMusicBot.Application.EventHandlers
 {
     public class CommandHandler
     {
@@ -42,7 +42,7 @@ namespace DiscordMusicBot.Application.Services
             }
 
             int argPos = 0;
-            bool isValidCommand = message.HasStringPrefix(_botOptions.CommandPrefix, ref argPos) 
+            bool isValidCommand = message.HasStringPrefix(_botOptions.CommandPrefix, ref argPos)
                                   || message.HasMentionPrefix(_socketClient.CurrentUser, ref argPos)
                                   || message.Author.IsBot;
 
@@ -50,7 +50,7 @@ namespace DiscordMusicBot.Application.Services
             {
                 return;
             }
-            
+
             var context = new SocketCommandContext(_socketClient, message);
 
             await _commandService.ExecuteAsync(

@@ -2,14 +2,14 @@
 using Discord.Commands;
 using Discord.WebSocket;
 
-namespace DiscordMusicBot.Application.Services
+namespace DiscordMusicBot.Application.EventHandlers
 {
-    public class LoggingService
+    public class LoggingHandler
     {
         private readonly CommandService _commandService;
         private readonly DiscordSocketClient _socketClient;
 
-        public LoggingService(CommandService commandService,
+        public LoggingHandler(CommandService commandService,
             DiscordSocketClient socketClient)
         {
             _commandService = commandService;

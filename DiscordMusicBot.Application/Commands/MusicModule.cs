@@ -8,16 +8,16 @@ namespace DiscordMusicBot.Application.Commands
 {
     public class MusicModule : ModuleBase<SocketCommandContext>
     {
-        private readonly MusicHandler _musicHandler;
-        private readonly SongHandler _linkHandler;
+        private readonly MusicPlayerService _musicPlayerService;
+        private readonly SongService _songService;
         private readonly BotOptions _botOptions;
 
-        public MusicModule(MusicHandler musicHandler,
-            SongHandler linkHandler,
+        public MusicModule(MusicPlayerService musicPlayerService,
+            SongService songService,
             IOptions<BotOptions> botOptions)
         {
-            _musicHandler = musicHandler;
-            _linkHandler = linkHandler;
+            _musicPlayerService = musicPlayerService;
+            _songService = songService;
             _botOptions = botOptions.Value;
         }
 
@@ -30,7 +30,7 @@ namespace DiscordMusicBot.Application.Commands
                 return;
             }
 
-            var song = await _linkHandler.GetSongAsync(query);
+            var song = await _songService.GetSongAsync(query);
 
             if (song == null)
             {
@@ -46,14 +46,14 @@ namespace DiscordMusicBot.Application.Commands
                 return;
             }
 
-            await _musicHandler.PlayAsync(Context.Guild, voiceChannel, Context.Channel, song);
+            await _musicPlayerService.PlayAsync(Context.Guild, voiceChannel, Context.Channel, song);
         }
 
         [Command("stop", RunMode = RunMode.Async)]
         public async Task StopAsync()
         {
             await Context.Channel.SendMessageAsync(":sleeping:");
-            await _musicHandler.StopAsync(Context.Guild);
+            await _musicPlayerService.StopAsync(Context.Guild);
         }
     }
 }

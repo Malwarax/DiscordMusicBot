@@ -3,7 +3,7 @@ using VideoLibrary;
 
 namespace DiscordMusicBot.Application.Services
 {
-    public class SongHandler
+    public class SongService
     {
         public async Task<SongModel> GetSongAsync(string url)
         {

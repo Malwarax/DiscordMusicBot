@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace DiscordMusicBot.Application.Services
 {
-    public class AudioStreamHandler
+    public class AudioStreamService
     {
         public async Task SendAsync(IAudioClient client, string link)
         {

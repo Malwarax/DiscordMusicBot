@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using DiscordMusicBot.Application.EventHandlers;
 using DiscordMusicBot.Application.Services;
 using DiscordMusicBot.Domain.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,11 +14,12 @@ namespace DiscordMusicBot.InfrastructureIoC
         {
             //app services
             services.AddSingleton<BotService>();
+            services.AddSingleton<MusicPlayerService>();
+            services.AddSingleton<SongService>();
+            services.AddSingleton<AudioStreamService>();
+
             services.AddSingleton<CommandHandler>();
-            services.AddSingleton<LoggingService>();
-            services.AddSingleton<MusicHandler>();
-            services.AddSingleton<SongHandler>();
-            services.AddSingleton<AudioStreamHandler>();
+            services.AddSingleton<LoggingHandler>();
 
             //discord.net services
             services.AddSingleton<CommandService>();

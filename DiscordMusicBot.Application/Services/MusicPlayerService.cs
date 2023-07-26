@@ -5,15 +5,14 @@ using DiscordMusicBot.Domain.Models;
 
 namespace DiscordMusicBot.Application.Services
 {
-    public class MusicHandler
+    public class MusicPlayerService
     {
-        private readonly Dictionary<SocketGuild, QueueModel> activeSockets = new();
+        private readonly Dictionary<SocketGuild, QueueModel> _activeServers = new();
+        private readonly AudioStreamService _audioStreamService;
 
-        private readonly AudioStreamHandler _audioStreamHandler;
-
-        public MusicHandler(AudioStreamHandler audioStreamHandler)
+        public MusicPlayerService(AudioStreamService audioStreamService)
         {
-            _audioStreamHandler = audioStreamHandler;
+            _audioStreamService = audioStreamService;
         }
 
         public async Task PlayAsync(SocketGuild server,
@@ -21,10 +20,10 @@ namespace DiscordMusicBot.Application.Services
             ISocketMessageChannel textChannel,
             SongModel song)
         {
-            if (activeSockets.TryGetValue(server, out var queue))
+            if (_activeServers.TryGetValue(server, out var queue))
             {
                 queue.Items.Enqueue(song);
-
+                await queue.TextChannel.SendMessageAsync($"Added to the queue: {song.Title}");
                 return;
             }
 
@@ -36,7 +35,7 @@ namespace DiscordMusicBot.Application.Services
             };
 
             newQueue.Items.Enqueue(song);
-            activeSockets.Add(server, newQueue);
+            _activeServers.Add(server, newQueue);
 
             var audioClient = await voiceChannel.ConnectAsync();
             await HandleQueueAsync(audioClient, newQueue);
@@ -44,11 +43,11 @@ namespace DiscordMusicBot.Application.Services
 
         public async Task StopAsync(SocketGuild server)
         {
-            if (activeSockets.TryGetValue(server, out var queue))
+            if (_activeServers.TryGetValue(server, out var queue))
             {
                 queue.Items.Clear();
                 await queue.VoiceChannel.DisconnectAsync();
-                activeSockets.Remove(server);
+                _activeServers.Remove(server);
             }
         }
 
@@ -57,11 +56,11 @@ namespace DiscordMusicBot.Application.Services
             while (queue.Items.Any())
             {
                 queue.CurrentSong = queue.Items.Dequeue();
-                string musicDescription = $"Now Playing: {queue.CurrentSong.Title} \n" +
+                string songDescription = $"Now playing: {queue.CurrentSong.Title} \n" +
                                           $"Author: {queue.CurrentSong.Author} \n" +
                                           $"URL: {queue.CurrentSong.Url}";
-                await queue.TextChannel.SendMessageAsync(musicDescription);
-                await _audioStreamHandler.SendAsync(audioClient, queue.CurrentSong.Url);
+                await queue.TextChannel.SendMessageAsync(songDescription);
+                await _audioStreamService.SendAsync(audioClient, queue.CurrentSong.Url);
             }
         }
     }
