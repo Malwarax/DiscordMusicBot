@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Audio;
 using Discord.WebSocket;
+using DiscordMusicBot.Application.Extensions;
 using DiscordMusicBot.Domain.Models;
 
 namespace DiscordMusicBot.Application.Services
@@ -22,7 +23,7 @@ namespace DiscordMusicBot.Application.Services
         {
             if (_activeServers.TryGetValue(server, out var queue))
             {
-                queue.Items.Enqueue(song);
+                queue.Items.Add(song);
                 await queue.TextChannel.SendMessageAsync($"Added to the queue: {song.Title}");
                 return;
             }
@@ -31,10 +32,10 @@ namespace DiscordMusicBot.Application.Services
             {
                 VoiceChannel = voiceChannel,
                 TextChannel = textChannel,
-                Items = new Queue<SongModel>(),
+                Items = new List<SongModel>(),
             };
 
-            newQueue.Items.Enqueue(song);
+            newQueue.Items.Add(song);
             _activeServers.Add(server, newQueue);
 
             var audioClient = await voiceChannel.ConnectAsync();
@@ -51,14 +52,54 @@ namespace DiscordMusicBot.Application.Services
             }
         }
 
+        public QueueModel GetQueue(SocketGuild server)
+        {
+            if (_activeServers.TryGetValue(server, out var queue))
+            {
+                return queue;
+            }
+
+            return null;
+        }
+
+        public bool ShuffleQueue(SocketGuild server)
+        {
+            if (_activeServers.TryGetValue(server, out var queue))
+            {
+                queue.Items.Shuffle();
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool RemoveItem(SocketGuild server, int position)
+        {
+            if (_activeServers.TryGetValue(server, out var queue))
+            {
+                if (position < 1 || position > queue.Items.Count)
+                {
+                    return false;
+                }
+
+                queue.Items.RemoveAt(position - 1);
+
+                return true;
+            }
+
+            return false;
+        }
+
         private async Task HandleQueueAsync(IAudioClient audioClient, QueueModel queue)
         {
             while (queue.Items.Any())
             {
-                queue.CurrentSong = queue.Items.Dequeue();
-                string songDescription = $"Now playing: {queue.CurrentSong.Title} \n" +
-                                          $"Author: {queue.CurrentSong.Author} \n" +
-                                          $"URL: {queue.CurrentSong.Url}";
+                queue.CurrentSong = queue.Items.First();
+                queue.Items.RemoveAt(0);
+                string songDescription = $"Now playing: {queue.CurrentSong.Title} \n" 
+                                         + $"Author: {queue.CurrentSong.Author} \n" 
+                                         + $"URL: {queue.CurrentSong.Url}";
                 await queue.TextChannel.SendMessageAsync(songDescription);
                 await _audioStreamService.SendAsync(audioClient, queue.CurrentSong.Url);
             }

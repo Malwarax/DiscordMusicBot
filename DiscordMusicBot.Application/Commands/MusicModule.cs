@@ -34,7 +34,7 @@ namespace DiscordMusicBot.Application.Commands
 
             if (song == null)
             {
-                await Context.Channel.SendMessageAsync($"Unable to find a song :sob:.");
+                await Context.Channel.SendMessageAsync($"Unable to find a song :sob:");
                 return;
             }
 
