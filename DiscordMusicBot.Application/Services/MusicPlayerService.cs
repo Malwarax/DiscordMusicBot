@@ -123,7 +123,7 @@ namespace DiscordMusicBot.Application.Services
             newQueue.Items.Add(song);
             _activeServers.Add(server, newQueue);
 
-            var audioClient = await voiceChannel.ConnectAsync();
+            var audioClient = await voiceChannel.ConnectAsync(selfDeaf: true);
             newQueue.AudioClient = audioClient;
 
             audioClient.Disconnected += ex => HandleDisconnectedAsync(ex, server);
