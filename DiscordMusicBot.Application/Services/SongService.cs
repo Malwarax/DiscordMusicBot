@@ -45,7 +45,8 @@ namespace DiscordMusicBot.Application.Services
                 .FirstOrDefault(); 
 
             bool isValidLink = string.IsNullOrEmpty(cleanLink) == false
-                               && cleanLink.Contains("youtube");
+                               && (cleanLink.Contains("youtube") 
+                                   || cleanLink.Contains("youtu.be"));
 
             if (!isValidLink)
             {
