@@ -68,6 +68,31 @@ namespace DiscordMusicBot.Application.Services
             return false;
         }
 
+        public async Task<bool> SkipAsync(SocketGuild server)
+        {
+            if (_activeServers.TryGetValue(server, out var queue))
+            {
+                if (queue.IsBotActive == false)
+                {
+                    return false;
+                }
+
+                queue.BaseAudioStream.Close();
+                queue.BaseAudioStream = null;
+                queue.CurrentSong = null;
+                queue.IsBotActive = false;
+
+                if (queue.Items.Any())
+                {
+                    await HandleQueueAsync(queue);
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
         public QueueModel GetQueue(SocketGuild server)
         {
             if (_activeServers.TryGetValue(server, out var queue))
@@ -119,9 +144,10 @@ namespace DiscordMusicBot.Application.Services
                                          + $"Author: {queue.CurrentSong.Author} \n"
                                          + $"URL: {queue.CurrentSong.Url}";
                 await queue.TextChannel.SendMessageAsync(songDescription);
-                await _audioStreamService.SendAsync(queue.AudioClient, queue.CurrentSong.Url);
+                await _audioStreamService.SendAsync(queue);
             }
 
+            queue.BaseAudioStream = null;
             queue.CurrentSong = null;
             queue.IsBotActive = false;
         }

@@ -18,6 +18,7 @@ namespace DiscordMusicBot.Application.Commands
         {
             string helpMessage = "Available commands: \n\n"
                                  + $"Play a song / add a song to a queue: **{_botOptions.CommandPrefix}play <link>**\n"
+                                 + $"Skip a song: **{_botOptions.CommandPrefix}skip**\n"
                                  + $"Stop the bot: **{_botOptions.CommandPrefix}stop**\n"
                                  + $"Get a queue: **{_botOptions.CommandPrefix}queue**\n"
                                  + $"Remove a song from a queue: **{_botOptions.CommandPrefix}queue-remove <position>**\n"

@@ -59,6 +59,19 @@ namespace DiscordMusicBot.Application.Commands
                 await Context.Channel.SendMessageAsync(":sleeping:");
             }
         }
+
+        [Command("skip", RunMode = RunMode.Async)]
+        public async Task SkipAsync()
+        {
+            var result = await _musicPlayerService.SkipAsync(Context.Guild);
+
+            if (result)
+            {
+                await Context.Channel.SendMessageAsync("The previous song was skipped.");
+                return;
+            }
+
+            await Context.Channel.SendMessageAsync("Nothing to skip.");
         }
     }
 }
