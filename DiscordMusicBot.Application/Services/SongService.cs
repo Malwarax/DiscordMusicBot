@@ -1,10 +1,16 @@
 ﻿using DiscordMusicBot.Domain.Models;
-using VideoLibrary;
 
 namespace DiscordMusicBot.Application.Services
 {
     public class SongService
     {
+        private readonly YoutubeService _youtubeService;
+
+        public SongService(YoutubeService youtubeService)
+        {
+            _youtubeService = youtubeService;
+        }
+
         public async Task<SongModel> GetSongAsync(string url)
         {
             var cleanLink = GetCleanLink(url);
@@ -16,14 +22,7 @@ namespace DiscordMusicBot.Application.Services
 
             try
             {
-                var video = await YouTube.Default.GetVideoAsync(url);
-
-                return new SongModel
-                {
-                    Title = video.Info.Title,
-                    Url = cleanLink,
-                    Author = video.Info.Author,
-                };
+                return await _youtubeService.GetSongInfoAsync(cleanLink);
             }
             catch
             {
