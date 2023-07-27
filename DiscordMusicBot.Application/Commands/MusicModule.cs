@@ -9,16 +9,16 @@ namespace DiscordMusicBot.Application.Commands
     public class MusicModule : ModuleBase<SocketCommandContext>
     {
         private readonly MusicPlayerService _musicPlayerService;
-        private readonly SongService _songService;
         private readonly BotOptions _botOptions;
+        private readonly YoutubeService _youtubeService;
 
         public MusicModule(MusicPlayerService musicPlayerService,
-            SongService songService,
-            IOptions<BotOptions> botOptions)
+            IOptions<BotOptions> botOptions,
+            YoutubeService youtubeService)
         {
             _musicPlayerService = musicPlayerService;
-            _songService = songService;
             _botOptions = botOptions.Value;
+            _youtubeService = youtubeService;
         }
 
         [Command("play", RunMode = RunMode.Async)]
@@ -40,11 +40,11 @@ namespace DiscordMusicBot.Application.Commands
                 return;
             }
 
-            var song = await _songService.GetSongAsync(query);
+            var song = await _youtubeService.GetSongAsync(query);
 
             if (song == null)
             {
-                await Context.Channel.SendMessageAsync($"Unable to find a song :sob:");
+                await Context.Channel.SendMessageAsync("Unable to find a song :sob:");
 
                 return;
             }

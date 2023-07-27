@@ -25,14 +25,14 @@ namespace DiscordMusicBot.Application.Commands
 
             if (queue == null)
             {
-                await Context.Channel.SendMessageAsync($"The queue doesn't exist.");
+                await Context.Channel.SendMessageAsync("The queue doesn't exist.");
 
                 return;
             }
 
             if (queue.CurrentSong == null && queue.Items.Any() == false)
             {
-                await Context.Channel.SendMessageAsync($"The queue is empty.");
+                await Context.Channel.SendMessageAsync("The queue is empty.");
 
                 return;
             }
@@ -60,17 +60,17 @@ namespace DiscordMusicBot.Application.Commands
         [Command("queue-remove", RunMode = RunMode.Async)]
         public async Task RemoveAsync(int? position = null)
         {
-            if (position == null || position < 1)
+            if (!position.HasValue || position < 1)
             {
                 await Context.Channel.SendMessageAsync(
-                    $"The position not provided or invalid. Use **{_botOptions.CommandPrefix}queue-remove <position in a queue>**");
+                    $"The position is not provided or invalid. Use **{_botOptions.CommandPrefix}queue-remove <position in a queue>**");
             }
 
             var result = _musicPlayerService.RemoveItem(Context.Guild, position.Value);
 
             if (result)
             {
-                await Context.Channel.SendMessageAsync($"The song was removed.");
+                await Context.Channel.SendMessageAsync("The song was removed.");
 
                 return;
             }
@@ -86,12 +86,12 @@ namespace DiscordMusicBot.Application.Commands
 
             if (result)
             {
-                await Context.Channel.SendMessageAsync($"The queue was shuffled.");
+                await Context.Channel.SendMessageAsync("The queue was shuffled.");
 
                 return;
             }
 
-            await Context.Channel.SendMessageAsync($"The queue doesn't exist.");
+            await Context.Channel.SendMessageAsync("The queue doesn't exist.");
         }
     }
 }

@@ -6,23 +6,45 @@ namespace DiscordMusicBot.Application.Services
 {
     public class YoutubeService
     {
-        private const string YoutubeWatchUrl = "https://www.youtube.com/watch";
         private const string ApiKeyPattern = @"""INNERTUBE_API_KEY"":""(.+?)""";
         private const string ApiVersionPattern = @"""INNERTUBE_CLIENT_VERSION"":""(.+?)""";
         private const string ApiNamePattern = @"""INNERTUBE_CLIENT_NAME"":""(.+?)""";
-        private const string VideoIdPattern = @".+\/(?>watch\?v=|.{0})(.+)";
 
+        private const string YoutubeWatchUrl = "https://www.youtube.com/watch";
         private const string ApiSearchUrl = "https://www.youtube.com/youtubei/v1/player?key=";
-        private readonly HttpClient _httpClient;
 
-        public YoutubeService(IHttpClientFactory httpClientFactory)
+        private readonly HttpClient _httpClient;
+        private readonly YoutubeLinkService _youtubeLinkService;
+
+        public YoutubeService(IHttpClientFactory httpClientFactory,
+            YoutubeLinkService youtubeLinkService)
         {
             _httpClient = httpClientFactory.CreateClient();
+            _youtubeLinkService = youtubeLinkService;
         }
 
-        public async Task<SongModel> GetSongInfoAsync(string url)
+        public async Task<SongModel> GetSongAsync(string url)
         {
-            var videoId = GetVideoId(url);
+            var cleanLink = _youtubeLinkService.GetCleanLink(url);
+
+            if (string.IsNullOrEmpty(cleanLink))
+            {
+                return null;
+            }
+
+            try
+            {
+                return await GetInfoAsync(cleanLink);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private async Task<SongModel> GetInfoAsync(string url)
+        {
+            var videoId = _youtubeLinkService.GetVideoId(url);
 
             if (string.IsNullOrEmpty(videoId))
             {
@@ -91,18 +113,6 @@ namespace DiscordMusicBot.Application.Services
                 Title = videoDetails.Title,
                 Url = url,
             };
-        }
-
-        private string GetVideoId(string url)
-        {
-            Match idMath = Regex.Match(url, VideoIdPattern);
-
-            if (idMath.Success)
-            {
-                return idMath.Groups[1].Value;
-            }
-
-            return string.Empty;
         }
     }
 }

@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordMusicBot.Domain", "D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordMusicBot.Application", "DiscordMusicBot.Application\DiscordMusicBot.Application.csproj", "{B410403F-676A-44A9-A600-95A8C0444AF2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordMusicBot.Presentation", "DiscordMusicBot.Presentation\DiscordMusicBot.Presentation.csproj", "{92091251-653D-498E-A769-BE93D79C095C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordMusicBot.Console", "DiscordMusicBot.Console\DiscordMusicBot.Console.csproj", "{30A6D8D5-A7CD-4462-B943-272D9190E2E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{B410403F-676A-44A9-A600-95A8C0444AF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B410403F-676A-44A9-A600-95A8C0444AF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B410403F-676A-44A9-A600-95A8C0444AF2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{92091251-653D-498E-A769-BE93D79C095C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{92091251-653D-498E-A769-BE93D79C095C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{92091251-653D-498E-A769-BE93D79C095C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{92091251-653D-498E-A769-BE93D79C095C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30A6D8D5-A7CD-4462-B943-272D9190E2E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30A6D8D5-A7CD-4462-B943-272D9190E2E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30A6D8D5-A7CD-4462-B943-272D9190E2E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30A6D8D5-A7CD-4462-B943-272D9190E2E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

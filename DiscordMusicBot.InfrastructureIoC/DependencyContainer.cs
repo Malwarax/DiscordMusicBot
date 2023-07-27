@@ -15,9 +15,9 @@ namespace DiscordMusicBot.InfrastructureIoC
             //app services
             services.AddSingleton<BotService>();
             services.AddSingleton<MusicPlayerService>();
-            services.AddSingleton<SongService>();
             services.AddSingleton<AudioStreamService>();
             services.AddSingleton<YoutubeService>();
+            services.AddSingleton<YoutubeLinkService>();
 
             services.AddHttpClient();
 
