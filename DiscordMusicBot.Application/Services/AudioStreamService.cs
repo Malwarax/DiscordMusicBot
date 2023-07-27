@@ -34,6 +34,7 @@ namespace DiscordMusicBot.Application.Services
                 finally
                 {
                     await discordStream.FlushAsync();
+                    queue.BaseAudioStream = null;
                     ffmpeg.Close();
                 }
             }

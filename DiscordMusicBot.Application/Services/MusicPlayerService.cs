@@ -20,22 +20,99 @@ namespace DiscordMusicBot.Application.Services
             ISocketMessageChannel textChannel,
             SongModel song)
         {
-            if (_activeServers.TryGetValue(server, out var queue))
+            if (!_activeServers.TryGetValue(server, out var queue))
             {
-                queue.Items.Add(song);
-
-                if (queue.IsBotActive)
-                {
-                    await queue.TextChannel.SendMessageAsync($"Added to the queue: {song.Title}");
-
-                    return;
-                }
-
-                await HandleQueueAsync(queue);
+                await AddNewQueueAsync(server, voiceChannel, textChannel, song);
 
                 return;
             }
 
+            queue.Items.Add(song);
+
+            if (queue.IsBotActive)
+            {
+                await queue.TextChannel.SendMessageAsync($"Added to the queue: {song.Title}");
+
+                return;
+            }
+
+            await HandleQueueAsync(queue);
+        }
+        
+        public async Task<bool> StopAsync(SocketGuild server)
+        {
+            if (!_activeServers.TryGetValue(server, out var queue))
+            {
+                return false;
+            }
+
+            await queue.VoiceChannel.DisconnectAsync();
+            _activeServers.Remove(server);
+
+            return true;
+        }
+
+        public bool Skip(SocketGuild server)
+        {
+            if (!_activeServers.TryGetValue(server, out var queue))
+            {
+                return false;
+            }
+
+            if (queue.IsBotActive == false && queue.BaseAudioStream != null)
+            {
+                return false;
+            }
+
+            queue.BaseAudioStream.Close();
+
+            return true;
+        }
+
+        public QueueModel GetQueue(SocketGuild server)
+        {
+            if (!_activeServers.TryGetValue(server, out var queue))
+            {
+                return null;
+            }
+
+            return queue;
+        }
+
+        public bool ShuffleQueue(SocketGuild server)
+        {
+            if (!_activeServers.TryGetValue(server, out var queue))
+            {
+                return false;
+            }
+
+            queue.Items.Shuffle();
+
+            return true;
+        }
+
+        public bool RemoveItem(SocketGuild server, int position)
+        {
+            if (!_activeServers.TryGetValue(server, out var queue))
+            {
+                return false;
+            }
+
+            if (position < 1 || position > queue.Items.Count)
+            {
+                return false;
+            }
+
+            queue.Items.RemoveAt(position - 1);
+
+            return true;
+        }
+
+        private async Task AddNewQueueAsync(SocketGuild server,
+            IVoiceChannel voiceChannel,
+            ISocketMessageChannel textChannel,
+            SongModel song)
+        {
             var newQueue = new QueueModel
             {
                 VoiceChannel = voiceChannel,
@@ -53,84 +130,6 @@ namespace DiscordMusicBot.Application.Services
 
             await HandleQueueAsync(newQueue);
         }
-        
-        public async Task<bool> StopAsync(SocketGuild server)
-        {
-            if (_activeServers.TryGetValue(server, out var queue))
-            {
-                queue.Items.Clear();
-                await queue.VoiceChannel.DisconnectAsync();
-                _activeServers.Remove(server);
-
-                return true;
-            }
-
-            return false;
-        }
-
-        public async Task<bool> SkipAsync(SocketGuild server)
-        {
-            if (_activeServers.TryGetValue(server, out var queue))
-            {
-                if (queue.IsBotActive == false)
-                {
-                    return false;
-                }
-
-                queue.BaseAudioStream.Close();
-                queue.BaseAudioStream = null;
-                queue.CurrentSong = null;
-                queue.IsBotActive = false;
-
-                if (queue.Items.Any())
-                {
-                    await HandleQueueAsync(queue);
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
-        public QueueModel GetQueue(SocketGuild server)
-        {
-            if (_activeServers.TryGetValue(server, out var queue))
-            {
-                return queue;
-            }
-
-            return null;
-        }
-
-        public bool ShuffleQueue(SocketGuild server)
-        {
-            if (_activeServers.TryGetValue(server, out var queue))
-            {
-                queue.Items.Shuffle();
-
-                return true;
-            }
-
-            return false;
-        }
-
-        public bool RemoveItem(SocketGuild server, int position)
-        {
-            if (_activeServers.TryGetValue(server, out var queue))
-            {
-                if (position < 1 || position > queue.Items.Count)
-                {
-                    return false;
-                }
-
-                queue.Items.RemoveAt(position - 1);
-
-                return true;
-            }
-
-            return false;
-        }
 
         private async Task HandleQueueAsync(QueueModel queue)
         {
@@ -147,7 +146,6 @@ namespace DiscordMusicBot.Application.Services
                 await _audioStreamService.SendAsync(queue);
             }
 
-            queue.BaseAudioStream = null;
             queue.CurrentSong = null;
             queue.IsBotActive = false;
         }

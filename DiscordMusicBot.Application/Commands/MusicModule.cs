@@ -66,7 +66,7 @@ namespace DiscordMusicBot.Application.Commands
         [Command("skip", RunMode = RunMode.Async)]
         public async Task SkipAsync()
         {
-            var result = await _musicPlayerService.SkipAsync(Context.Guild);
+            var result = _musicPlayerService.Skip(Context.Guild);
 
             if (result)
             {
