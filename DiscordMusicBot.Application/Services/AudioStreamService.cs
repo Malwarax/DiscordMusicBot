@@ -8,7 +8,7 @@ namespace DiscordMusicBot.Application.Services
     {
         public async Task SendAsync(QueueModel queue)
         {
-            var psi = new ProcessStartInfo
+            var startInfo = new ProcessStartInfo
             {
                 FileName = "cmd.exe",
                 Arguments = $"/C yt-dlp -f bestaudio -o - \"{queue.CurrentSong.Url}\" | ffmpeg -i pipe:0 -ac 2 -f s16le -ar 48000 pipe:1",
@@ -17,15 +17,15 @@ namespace DiscordMusicBot.Application.Services
                 CreateNoWindow = true,
             };
 
-            using (var ffmpeg = Process.Start(psi))
-            using (var output = ffmpeg.StandardOutput.BaseStream)
-            using (var discord = queue.AudioClient.CreatePCMStream(AudioApplication.Music))
+            using (var ffmpeg = Process.Start(startInfo))
+            using (var outputStream = ffmpeg.StandardOutput.BaseStream)
+            using (var discordStream = queue.AudioClient.CreatePCMStream(AudioApplication.Music))
             {
-                queue.BaseAudioStream = output;
+                queue.BaseAudioStream = outputStream;
 
                 try
                 {
-                    await output.CopyToAsync(discord);
+                    await outputStream.CopyToAsync(discordStream);
                 }
                 catch
                 {
@@ -33,7 +33,7 @@ namespace DiscordMusicBot.Application.Services
                 }
                 finally
                 {
-                    await discord.FlushAsync();
+                    await discordStream.FlushAsync();
                     ffmpeg.Close();
                 }
             }

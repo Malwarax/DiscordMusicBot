@@ -18,14 +18,22 @@ namespace DiscordMusicBot.Application.Commands
             _botOptions = botOptions.Value;
         }
 
-        [Command("queue")]
+        [Command("queue", RunMode = RunMode.Async)]
         public async Task QueueAsync()
         {
             var queue = _musicPlayerService.GetQueue(Context.Guild);
 
-            if (queue == null || queue.Items?.Any() != true)
+            if (queue == null)
             {
-                await Context.Channel.SendMessageAsync($"The queue is empty or doesn't exist.");
+                await Context.Channel.SendMessageAsync($"The queue doesn't exist.");
+
+                return;
+            }
+
+            if (queue.CurrentSong == null && queue.Items.Any() == false)
+            {
+                await Context.Channel.SendMessageAsync($"The queue is empty.");
+
                 return;
             }
 
@@ -36,17 +44,20 @@ namespace DiscordMusicBot.Application.Commands
                 stringBuilder.AppendLine($"Current song: {queue.CurrentSong.Title}");
             }
 
-            stringBuilder.AppendLine("Queue:");
-
-            for (int i = 0; i < queue.Items.Count; i++)
+            if (queue.Items.Any())
             {
-                stringBuilder.AppendLine($"{i + 1}.\t{queue.Items[i].Title}");
+                stringBuilder.AppendLine("Queue:");
+
+                for (int i = 0; i < queue.Items.Count; i++)
+                {
+                    stringBuilder.AppendLine($"{i + 1}.\t{queue.Items[i].Title}");
+                }
             }
 
             await Context.Channel.SendMessageAsync(stringBuilder.ToString());
         }
 
-        [Command("queue-remove")]
+        [Command("queue-remove", RunMode = RunMode.Async)]
         public async Task RemoveAsync(int? position = null)
         {
             if (position == null || position < 1)
@@ -60,6 +71,7 @@ namespace DiscordMusicBot.Application.Commands
             if (result)
             {
                 await Context.Channel.SendMessageAsync($"The song was removed.");
+
                 return;
             }
 
@@ -67,7 +79,7 @@ namespace DiscordMusicBot.Application.Commands
                 $"Something went wrong. Use **{_botOptions.CommandPrefix}queue-remove <position in a queue>**");
         }
 
-        [Command("queue-shuffle")]
+        [Command("queue-shuffle", RunMode = RunMode.Async)]
         public async Task ShuffleAsync()
         {
             var result = _musicPlayerService.ShuffleQueue(Context.Guild);
@@ -75,6 +87,7 @@ namespace DiscordMusicBot.Application.Commands
             if (result)
             {
                 await Context.Channel.SendMessageAsync($"The queue was shuffled.");
+
                 return;
             }
 

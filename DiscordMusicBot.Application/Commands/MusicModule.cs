@@ -24,9 +24,19 @@ namespace DiscordMusicBot.Application.Commands
         [Command("play", RunMode = RunMode.Async)]
         public async Task PlayAsync(string? query = null)
         {
+            var voiceChannel = (Context.User as IGuildUser)?.VoiceChannel;
+
+            if (voiceChannel == null)
+            {
+                await Context.Channel.SendMessageAsync("User must be in a voice channel.");
+
+                return;
+            }
+
             if (string.IsNullOrEmpty(query))
             {
                 await Context.Channel.SendMessageAsync($"The link is not provided. Use **{_botOptions.CommandPrefix}play <link>**");
+
                 return;
             }
 
@@ -35,14 +45,7 @@ namespace DiscordMusicBot.Application.Commands
             if (song == null)
             {
                 await Context.Channel.SendMessageAsync($"Unable to find a song :sob:");
-                return;
-            }
 
-            var voiceChannel = (Context.User as IGuildUser)?.VoiceChannel;
-
-            if (voiceChannel == null)
-            {
-                await Context.Channel.SendMessageAsync("User must be in a voice channel.");
                 return;
             }
 
@@ -68,6 +71,7 @@ namespace DiscordMusicBot.Application.Commands
             if (result)
             {
                 await Context.Channel.SendMessageAsync("The previous song was skipped.");
+
                 return;
             }
 
