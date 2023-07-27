@@ -54,14 +54,18 @@ namespace DiscordMusicBot.Application.Services
             await HandleQueueAsync(newQueue);
         }
         
-        public async Task StopAsync(SocketGuild server)
+        public async Task<bool> StopAsync(SocketGuild server)
         {
             if (_activeServers.TryGetValue(server, out var queue))
             {
                 queue.Items.Clear();
                 await queue.VoiceChannel.DisconnectAsync();
                 _activeServers.Remove(server);
+
+                return true;
             }
+
+            return false;
         }
 
         public QueueModel GetQueue(SocketGuild server)

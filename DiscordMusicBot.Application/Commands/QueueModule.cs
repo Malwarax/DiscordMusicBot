@@ -51,7 +51,8 @@ namespace DiscordMusicBot.Application.Commands
         {
             if (position == null || position < 1)
             {
-                await Context.Channel.SendMessageAsync($"The position not provided or invalid. Use **{_botOptions.CommandPrefix}queue-remove <position in a queue>**");
+                await Context.Channel.SendMessageAsync(
+                    $"The position not provided or invalid. Use **{_botOptions.CommandPrefix}queue-remove <position in a queue>**");
             }
 
             var result = _musicPlayerService.RemoveItem(Context.Guild, position.Value);
@@ -62,7 +63,8 @@ namespace DiscordMusicBot.Application.Commands
                 return;
             }
 
-            await Context.Channel.SendMessageAsync($"Something went wrong. Use **{_botOptions.CommandPrefix}queue-remove <position in a queue>**");
+            await Context.Channel.SendMessageAsync(
+                $"Something went wrong. Use **{_botOptions.CommandPrefix}queue-remove <position in a queue>**");
         }
 
         [Command("queue-shuffle")]

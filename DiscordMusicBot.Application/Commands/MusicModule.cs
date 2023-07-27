@@ -52,8 +52,13 @@ namespace DiscordMusicBot.Application.Commands
         [Command("stop", RunMode = RunMode.Async)]
         public async Task StopAsync()
         {
-            await Context.Channel.SendMessageAsync(":sleeping:");
-            await _musicPlayerService.StopAsync(Context.Guild);
+            var result = await _musicPlayerService.StopAsync(Context.Guild);
+
+            if (result)
+            {
+                await Context.Channel.SendMessageAsync(":sleeping:");
+            }
+        }
         }
     }
 }
