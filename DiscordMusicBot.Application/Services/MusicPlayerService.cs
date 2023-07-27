@@ -59,7 +59,7 @@ namespace DiscordMusicBot.Application.Services
                 return false;
             }
 
-            if (queue.IsBotActive == false && queue.BaseAudioStream != null)
+            if (queue.IsBotActive == false || queue.BaseAudioStream == null)
             {
                 return false;
             }
