@@ -21,6 +21,7 @@ namespace DiscordMusicBot.Application.Commands
             _youtubeService = youtubeService;
         }
 
+        [RequireContext(ContextType.Guild)]
         [Command("play", RunMode = RunMode.Async)]
         public async Task PlayAsync(string? query = null)
         {
@@ -52,6 +53,7 @@ namespace DiscordMusicBot.Application.Commands
             await _musicPlayerService.PlayAsync(Context.Guild, voiceChannel, Context.Channel, song);
         }
 
+        [RequireContext(ContextType.Guild)]
         [Command("stop", RunMode = RunMode.Async)]
         public async Task StopAsync()
         {
@@ -63,6 +65,7 @@ namespace DiscordMusicBot.Application.Commands
             }
         }
 
+        [RequireContext(ContextType.Guild)]
         [Command("skip", RunMode = RunMode.Async)]
         public async Task SkipAsync()
         {

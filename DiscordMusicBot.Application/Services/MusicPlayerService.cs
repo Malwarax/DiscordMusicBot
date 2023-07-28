@@ -121,12 +121,21 @@ namespace DiscordMusicBot.Application.Services
             };
 
             newQueue.Items.Add(song);
+
+            try
+            {
+                var audioClient = await voiceChannel.ConnectAsync(selfDeaf: true);
+                newQueue.AudioClient = audioClient;
+                audioClient.Disconnected += ex => HandleDisconnectedAsync(ex, server);
+            }
+            catch
+            {
+                await textChannel.SendMessageAsync($"Can't connect to the voice channel.");
+
+                return;
+            }
+
             _activeServers.Add(server, newQueue);
-
-            var audioClient = await voiceChannel.ConnectAsync(selfDeaf: true);
-            newQueue.AudioClient = audioClient;
-
-            audioClient.Disconnected += ex => HandleDisconnectedAsync(ex, server);
 
             await HandleQueueAsync(newQueue);
         }
@@ -142,12 +151,34 @@ namespace DiscordMusicBot.Application.Services
                 string songDescription = $"Now playing: {queue.CurrentSong.Title} \n"
                                          + $"Author: {queue.CurrentSong.Author} \n"
                                          + $"URL: {queue.CurrentSong.Url}";
-                await queue.TextChannel.SendMessageAsync(songDescription);
+
+                await SendNextSongDescriptionAsync(queue, songDescription);
                 await _audioStreamService.SendAsync(queue);
             }
 
             queue.CurrentSong = null;
             queue.IsBotActive = false;
+        }
+
+        private static async Task SendNextSongDescriptionAsync(QueueModel queue, string songDescription)
+        {
+            try
+            {
+                await queue.TextChannel.SendMessageAsync(songDescription);
+            }
+            catch
+            {
+                try
+                {
+                    await queue.VoiceChannel.SendMessageAsync(songDescription);
+                    queue.TextChannel = (ISocketMessageChannel)queue.VoiceChannel;
+                }
+                catch
+                {
+                    Console.WriteLine(
+                        $"[General/Error] {DateTime.Now:hh:mm:ss}\tThe bot can't send the next song description");
+                }
+            }
         }
 
         private Task HandleDisconnectedAsync(Exception exception, SocketGuild server)

@@ -18,6 +18,7 @@ namespace DiscordMusicBot.Application.Commands
             _botOptions = botOptions.Value;
         }
 
+        [RequireContext(ContextType.Guild)]
         [Command("queue", RunMode = RunMode.Async)]
         public async Task QueueAsync()
         {
@@ -57,6 +58,7 @@ namespace DiscordMusicBot.Application.Commands
             await Context.Channel.SendMessageAsync(stringBuilder.ToString());
         }
 
+        [RequireContext(ContextType.Guild)]
         [Command("queue-remove", RunMode = RunMode.Async)]
         public async Task RemoveAsync(int? position = null)
         {
@@ -79,6 +81,7 @@ namespace DiscordMusicBot.Application.Commands
                 $"Something went wrong. Use **{_botOptions.CommandPrefix}queue-remove <position in a queue>**");
         }
 
+        [RequireContext(ContextType.Guild)]
         [Command("queue-shuffle", RunMode = RunMode.Async)]
         public async Task ShuffleAsync()
         {
