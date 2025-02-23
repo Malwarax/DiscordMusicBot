@@ -1,21 +1,20 @@
-﻿namespace DiscordMusicBot.Application.Extensions
+﻿namespace DiscordMusicBot.Application.Extensions;
+
+public static class ListExtensions
 {
-    public static class ListExtensions
+    private static Random rng = new ();
+
+    public static void Shuffle<T>(this IList<T> list)
     {
-        private static Random rng = new ();
+        int n = list.Count;
 
-        public static void Shuffle<T>(this IList<T> list)
+        while (n > 1)
         {
-            int n = list.Count;
-
-            while (n > 1)
-            {
-                n--;
-                int k = rng.Next(n + 1);
-                T value = list[k];
-                list[k] = list[n];
-                list[n] = value;
-            }
+            n--;
+            int k = rng.Next(n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
         }
     }
 }

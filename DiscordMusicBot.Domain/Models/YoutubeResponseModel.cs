@@ -1,18 +1,17 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DiscordMusicBot.Domain.Models
-{
-    public class YoutubeResponseModel
-    {
-        [JsonPropertyName("videoDetails")]
-        public VideoDetailsModel VideoDetails { get; set; }
+namespace DiscordMusicBot.Domain.Models;
 
-        public class VideoDetailsModel
-        {
-            [JsonPropertyName("title")]
-            public string Title { get; set; }
-            [JsonPropertyName("author")]
-            public string Author { get; set; }
-        }
+public class YoutubeResponseModel
+{
+    [JsonPropertyName("videoDetails")]
+    public VideoDetailsModel VideoDetails { get; set; }
+
+    public class VideoDetailsModel
+    {
+        [JsonPropertyName("title")]
+        public string Title { get; set; }
+        [JsonPropertyName("author")]
+        public string Author { get; set; }
     }
 }

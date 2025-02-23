@@ -2,30 +2,22 @@
 using DiscordMusicBot.Domain.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace DiscordMusicBot.Application.Commands
+namespace DiscordMusicBot.Application.Commands;
+
+public class InfoModule(IOptions<BotOptions> botOptions) : ModuleBase<SocketCommandContext>
 {
-    public class InfoModule : ModuleBase<SocketCommandContext>
+    [Command("help")]
+    public async Task HelpAsync()
     {
-        private readonly BotOptions _botOptions;
+        string helpMessage = "Available commands: \n\n"
+                             + $"Play a song / add a song to a queue: **{botOptions.Value.CommandPrefix}play <link>**\n"
+                             + $"Skip a song: **{botOptions.Value.CommandPrefix}skip**\n"
+                             + $"Stop the bot: **{botOptions.Value.CommandPrefix}stop**\n"
+                             + $"Get a queue: **{botOptions.Value.CommandPrefix}queue**\n"
+                             + $"Remove a song from a queue: **{botOptions.Value.CommandPrefix}queue-remove <position>**\n"
+                             + $"Shuffle a queue: **{botOptions.Value.CommandPrefix}queue-shuffle**\n"
+                             + $"Help: **{botOptions.Value.CommandPrefix}help**\n";
 
-        public InfoModule(IOptions<BotOptions> botOptions)
-        {
-            _botOptions = botOptions.Value;
-        }
-
-        [Command("help")]
-        public async Task HelpAsync()
-        {
-            string helpMessage = "Available commands: \n\n"
-                                 + $"Play a song / add a song to a queue: **{_botOptions.CommandPrefix}play <link>**\n"
-                                 + $"Skip a song: **{_botOptions.CommandPrefix}skip**\n"
-                                 + $"Stop the bot: **{_botOptions.CommandPrefix}stop**\n"
-                                 + $"Get a queue: **{_botOptions.CommandPrefix}queue**\n"
-                                 + $"Remove a song from a queue: **{_botOptions.CommandPrefix}queue-remove <position>**\n"
-                                 + $"Shuffle a queue: **{_botOptions.CommandPrefix}queue-shuffle**\n"
-                                 + $"Help: **{_botOptions.CommandPrefix}help**\n";
-
-            await Context.Channel.SendMessageAsync(helpMessage);
-        }
+        await Context.Channel.SendMessageAsync(helpMessage);
     }
 }

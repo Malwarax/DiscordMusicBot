@@ -4,59 +4,45 @@ using Discord.WebSocket;
 using DiscordMusicBot.Domain.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace DiscordMusicBot.Application.EventHandlers
+namespace DiscordMusicBot.Application.EventHandlers;
+
+public class CommandHandler(CommandService commandService,
+    IOptions<BotOptions> botOptions,
+    DiscordSocketClient socketClient,
+    IServiceProvider serviceProvider)
 {
-    public class CommandHandler
+    public async Task InstallCommandsAsync()
     {
-        private readonly CommandService _commandService;
-        private readonly BotOptions _botOptions;
-        private readonly DiscordSocketClient _socketClient;
-        private readonly IServiceProvider _serviceProvider;
+        socketClient.MessageReceived += HandleCommandAsync;
 
-        public CommandHandler(CommandService commandService,
-            IOptions<BotOptions> botOptions,
-            DiscordSocketClient socketClient,
-            IServiceProvider serviceProvider)
+        await commandService.AddModulesAsync(assembly: Assembly.GetExecutingAssembly(),
+            services: serviceProvider);
+    }
+
+    private async Task HandleCommandAsync(SocketMessage messageParam)
+    {
+        var message = messageParam as SocketUserMessage;
+
+        if (message == null)
         {
-            _commandService = commandService;
-            _botOptions = botOptions.Value;
-            _socketClient = socketClient;
-            _serviceProvider = serviceProvider;
+            return;
         }
 
-        public async Task InstallCommandsAsync()
-        {
-            _socketClient.MessageReceived += HandleCommandAsync;
+        int argPos = 0;
+        bool isValidCommand = message.HasStringPrefix(botOptions.Value.CommandPrefix, ref argPos)
+                              || message.HasMentionPrefix(socketClient.CurrentUser, ref argPos)
+                              || message.Author.IsBot;
 
-            await _commandService.AddModulesAsync(assembly: Assembly.GetExecutingAssembly(),
-                services: _serviceProvider);
+        if (!isValidCommand)
+        {
+            return;
         }
 
-        private async Task HandleCommandAsync(SocketMessage messageParam)
-        {
-            var message = messageParam as SocketUserMessage;
+        var context = new SocketCommandContext(socketClient, message);
 
-            if (message == null)
-            {
-                return;
-            }
-
-            int argPos = 0;
-            bool isValidCommand = message.HasStringPrefix(_botOptions.CommandPrefix, ref argPos)
-                                  || message.HasMentionPrefix(_socketClient.CurrentUser, ref argPos)
-                                  || message.Author.IsBot;
-
-            if (!isValidCommand)
-            {
-                return;
-            }
-
-            var context = new SocketCommandContext(_socketClient, message);
-
-            await _commandService.ExecuteAsync(
-                context: context,
-                argPos: argPos,
-                services: _serviceProvider);
-        }
+        await commandService.ExecuteAsync(
+            context: context,
+            argPos: argPos,
+            services: serviceProvider);
     }
 }
